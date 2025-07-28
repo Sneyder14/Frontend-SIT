@@ -2,17 +2,24 @@ const API_URL = "http://192.168.101.15:8000/api/courses/";
 
 export async function obtenerCursos() {
   try {
-    const response = await fetch(API_URL);
+    const token = await AsyncStorage.getItem('token');
+
+    const response = await fetch(API_URL, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
 
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(JSON.stringify(errorData));
     }
 
-    const cursos = await response.json();
-    return cursos;
+    return await response.json();
   } catch (error) {
-    throw new Error('Error al obtener los cursos: ' + error.message);
+    throw new Error('Error al obtener los estudiantes: ' + error.message);
   }
 }
 

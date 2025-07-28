@@ -1,36 +1,47 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const API_URL = "http://192.168.101.15:8000/api/students/";
 
 export async function obtenerEstudiantes() {
     try {
-        const response = await fetch(API_URL);
+        const token = await AsyncStorage.getItem('token');
+
+        const response = await fetch(API_URL, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        });
 
         if (!response.ok) {
             const errorData = await response.json();
             throw new Error(JSON.stringify(errorData));
         }
 
-        const estudiantes = await response.json();
-        return estudiantes;
+        return await response.json();
     } catch (error) {
         throw new Error('Error al obtener los estudiantes: ' + error.message);
     }
 }
 
 
-export async function createEstudiantes(estudiante) {
+const loginUsuario = async (email, password) => {
     const response = await fetch(API_URL, {
-        method: 'POST',
+        method: "POST",
         headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
         },
-        body: JSON.stringify(estudiante),
+        body: JSON.stringify({ email, password }),
     });
 
+    const data = await response.json();
+
     if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(JSON.stringify(errorData));
+        throw new Error(data.detail || "Error al iniciar sesión");
     }
 
-    const newEstudiante = await response.json();
-    return newEstudiante;
-}
+    
+    await AsyncStorage.setItem('token', data.access); 
+    return data;
+};

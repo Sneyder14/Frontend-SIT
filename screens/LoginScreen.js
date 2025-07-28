@@ -10,13 +10,13 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import CustomButton from '../components/CustomButton';
 import ModalMensaje from '../components/ModalComponente';
-import { obtenerUsuarios } from '../api/servicesUsuarios';
+import { loginUsuario } from '../api/servicesUsuarios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMensaje, setModalMensaje] = useState({
     tipo: 'error',
@@ -24,56 +24,43 @@ export default function LoginScreen({ navigation }) {
     subtitulo: '',
   });
 
-
   const handleLogin = async () => {
     if (!email.trim() || !password.trim()) {
       setModalMensaje({
         tipo: 'error',
         titulo: 'Campos vacíos',
-        subtitulo: 'Completa Todos Los Campos',
-      });
-      setModalVisible(true);
-      return;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setModalMensaje({
-        tipo: 'error',
-        titulo: 'Correo inválido',
-        subtitulo: 'Ingresa un correo electrónico válido.',
+        subtitulo: 'Completa todos los campos para continuar.',
       });
       setModalVisible(true);
       return;
     }
 
     try {
-      const usuarios = await obtenerUsuarios();
-      const usuarioEncontrado = usuarios.find(
-        (user) => user.email === email && user.password === password
-      );
+      const { access } = await loginUsuario(email, password);
 
-      if (usuarioEncontrado) {
-        setModalMensaje({
-          tipo: 'exito',
-          titulo: '¡Bienvenido!',
-          subtitulo: 'Inicio de sesión exitoso.',
-        });
-        setModalVisible(true);
-        setTimeout(() => {
-          setModalVisible(false);
-          navigation.navigate('Dashboard');
-        }, 2000);
-      } else {
-        setModalMensaje({
-          tipo: 'error',
-          titulo: 'Credenciales incorrectas',
-          subtitulo: 'Correo o contraseña incorrectos.',
-        });
-        setModalVisible(true);
-      }
+      await AsyncStorage.setItem('token', access);
+
+      setModalMensaje({
+        tipo: 'exito',
+        titulo: '¡Bienvenido!',
+        subtitulo: 'Inicio de sesión exitoso.',
+      });
+      setModalVisible(true);
+
+      setTimeout(() => {
+        setModalVisible(false);
+        navigation.replace('Dashboard');
+
+      }, 2000);
     } catch (error) {
-      console.error('Error al obtener usuarios:', error.message);
+      console.error('Error al iniciar sesión:', error);
+      setModalMensaje({
+        tipo: 'error',
+        titulo: 'Error de inicio de sesión',
+        subtitulo:
+          error?.response?.data?.detail || 'Correo o contraseña incorrectos.',
+      });
+      setModalVisible(true);
     }
   };
 
@@ -83,10 +70,10 @@ export default function LoginScreen({ navigation }) {
         <Text style={styles.logoText}>EIS-SINTEM</Text>
       </View>
 
-      <Text style={styles.title}>INICIAR SESIÓN</Text>
+      <Text style={styles.title}>LOGIN</Text>
 
       <View style={styles.inputContainer}>
-        <Icon name="email" size={20} color="#888" style={styles.icon} />
+        <Icon name="email" size={20} color="#3376ff" style={styles.icon} />
         <TextInput
           style={styles.input}
           placeholder="Correo electrónico"
@@ -98,7 +85,7 @@ export default function LoginScreen({ navigation }) {
       </View>
 
       <View style={styles.inputContainer}>
-        <Icon name="lock" size={20} color="#888" style={styles.icon} />
+        <Icon name="lock" size={20} color="#3376ff" style={styles.icon} />
         <TextInput
           style={styles.input}
           placeholder="Contraseña"
@@ -107,7 +94,11 @@ export default function LoginScreen({ navigation }) {
           onChangeText={setPassword}
         />
         <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-          <Icon name={showPassword ? 'visibility-off' : 'visibility'} size={20} color="#666" />
+          <Icon
+            name={showPassword ? 'visibility-off' : 'visibility'}
+            size={20}
+            color="#3376ff"
+          />
         </TouchableOpacity>
       </View>
 
@@ -153,9 +144,9 @@ const styles = StyleSheet.create({
     color: '#3376ff',
   },
   title: {
-    fontSize: 26,
+    fontSize: 30,
     fontWeight: '600',
-    color: '#333',
+    color: '#3376ff',
     marginBottom: 20,
   },
   inputContainer: {

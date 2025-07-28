@@ -10,7 +10,7 @@ const Stack = createStackNavigator();
 
 export default function AppNavigator() {
   return (
-    <Stack.Navigator initialRouteName="Dashboard">
+    <Stack.Navigator initialRouteName="Login">
       {/* Pantalla de inicio de sesión */}
       <Stack.Screen
         name="Login"

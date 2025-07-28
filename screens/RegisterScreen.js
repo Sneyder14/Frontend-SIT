@@ -3,8 +3,8 @@ import { View, Text, TextInput, Modal, Alert, StyleSheet, SafeAreaView } from 'r
 import CustomButton from '../components/CustomButton';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { createUsuarios } from "../api/servicesUsuarios";
-import { obtenerUsuarios } from '../api/servicesUsuarios';
 import ModalMensaje from '../components/ModalComponente';
+import { obtenerUsuarios } from '../api/servicesUsuarios';
 
 export default function RegisterScreen({ navigation, route }) {
     const { rol = 2 } = route.params || {};
@@ -28,22 +28,6 @@ export default function RegisterScreen({ navigation, route }) {
     const [showPassword, setShowPassword] = useState(false);
 
 
-    //Obtener Usuarios
-    const verificarUsuarioExistente = async (id_user, email) => {
-        try {
-            const usuarios = await obtenerUsuarios();
-            const idDuplicado = usuarios.some(u => u.id_user === parseInt(id_user));
-            const emailDuplicado = usuarios.some(u =>
-                u.email?.trim().toLowerCase() === email.trim().toLowerCase()
-            );
-
-
-            return { idDuplicado, emailDuplicado };
-        } catch (error) {
-            console.error('Error al verificar usuarios:', error.message);
-            return { idDuplicado: false, emailDuplicado: false };
-        }
-    };
 
     const handleRegister = async () => {
         if (!idUser.trim() || !nombre.trim() || !apellido.trim() || !email.trim() || !password.trim() || !status.trim()) {
@@ -64,7 +48,6 @@ export default function RegisterScreen({ navigation, route }) {
                 subtitulo: 'Correo No Válido',
             });
             setModalVisible(true);
-
             return;
         }
 
@@ -78,25 +61,27 @@ export default function RegisterScreen({ navigation, route }) {
             setModalVisible(true);
             return;
         }
+        const usuariosExistentes = await obtenerUsuarios();
 
-
-        const { idDuplicado, emailDuplicado } = await verificarUsuarioExistente(idUser, email);
-
-        if (idDuplicado) {
+        // Validar ID duplicado
+        const idExistente = usuariosExistentes.some(u => u.id_user === parseInt(idUser));
+        if (idExistente) {
             setModalMensaje({
                 tipo: 'error',
-                titulo: 'ID duplicado',
-                subtitulo: 'El ID ingresado ya está registrado.'
+                titulo: 'ID Duplicado',
+                subtitulo: 'Ya existe un usuario con ese ID.',
             });
             setModalVisible(true);
             return;
         }
 
-        if (emailDuplicado) {
+        // Validar email duplicado
+        const emailExistente = usuariosExistentes.some(u => u.email.toLowerCase() === email.toLowerCase());
+        if (emailExistente) {
             setModalMensaje({
                 tipo: 'error',
-                titulo: 'Correo duplicado',
-                subtitulo: 'El correo ingresado ya está registrado.'
+                titulo: 'Correo ya registrado',
+                subtitulo: 'Ya existe un usuario con ese correo electrónico.',
             });
             setModalVisible(true);
             return;
@@ -120,27 +105,37 @@ export default function RegisterScreen({ navigation, route }) {
                 subtitulo: `Usuario ${nombre} ${apellido} registrado correctamente.`,
             });
             setModalVisible(true);
+
+            setIdUser('');
+            setNombre('');
+            setApellido('');
+            setEmail('');
+            setPassword('');
+            setStatus('');
         } catch (error) {
             setModalMensaje({
                 tipo: 'error',
                 titulo: 'Error',
-                subtitulo: 'No Se pudo completar el registro' + error.message,
+                subtitulo: 'No Se pudo completar el registro: ' + error.message,
             });
             setModalVisible(true);
-
             console.error('Error al registrar usuario:', error.message);
         }
-
     };
 
-
+    const handleCloseModal = () => {
+        setModalVisible(false);
+        if (modalMensaje.tipo === 'exito') {
+            navigation.navigate('Login')
+        }
+    };
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.logoContainer}>
                 <Text style={styles.logoText}>EIS-SINTEM</Text>
             </View>
 
-            <Text style={styles.title}>CREAR CUENTA</Text>
+            <Text style={styles.title}><Icon name="person" size={30} color="#3376ff" style={styles.inputIcon} /> SING UP</Text>
 
             {[
                 { icon: 'person', placeholder: 'ID Usuario', value: idUser, onChange: setIdUser, type: 'numeric' },
@@ -194,7 +189,7 @@ export default function RegisterScreen({ navigation, route }) {
                 tipo={modalMensaje.tipo}
                 titulo={modalMensaje.titulo}
                 subtitulo={modalMensaje.subtitulo}
-                onClose={() => setModalVisible(false)}
+                onClose={handleCloseModal}
                 autoClose={true}
             />
 
@@ -220,9 +215,9 @@ const styles = StyleSheet.create({
         color: '#3376ff',
     },
     title: {
-        fontSize: 22,
+        fontSize: 30,
         fontWeight: '600',
-        color: '#333',
+        color: '#3376ff',
         textAlign: 'center',
         marginBottom: 20,
     },

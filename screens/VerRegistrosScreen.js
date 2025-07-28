@@ -1,15 +1,17 @@
 import { View, Text, ScrollView, StyleSheet, TextInput, TouchableOpacity } from "react-native";
 import { useEffect, useState } from "react";
 import TablaComponente from "../components/TablaComponente";
-import { obtenerEstudiantes } from "../api/servicesEstudiantes";
-import { obtenerProfesores } from "../api/servicesProfesores";
-import { obtenerCursos } from "../api/courseServices";
-import { obtenerSemestre } from "../api/registroSemestre";
-import { obtenerCursoProfesores } from "../api/servicesCursoProfesores";
-import { obtenerCursoEstudiante } from "../api/servicesCursoEstudiantes";
-import { obtenerCursoSemestres } from "../api/servicesCursoSemestre";
-import { obtenerUsuarios } from "../api/servicesUsuarios";
-import { obtenerRoles } from "../api/servicesRoles";
+import { obtenerEstudiantes } from "../api/apiToken";
+import { obtenerProfesores } from "../api/apiToken";
+import { obtenerCursos } from "../api/apiToken";
+import { obtenerSemestres } from "../api/apiToken";
+import { obtenerCursoSemestre } from "../api/apiToken";
+import { obtenerCursoProfesores } from "../api/apiToken";
+import { obtenerCursoEstudiantes } from "../api/apiToken";
+import { obtenerUsuarios } from "../api/apiToken";
+import { obtenerRoles } from "../api/apiToken";
+import { fetchConToken } from "../api/apiToken";
+import ModalMensaje from "../components/ModalComponente";
 
 const opciones = [
     { label: 'Estudiantes', value: 'estudiantes' },
@@ -24,6 +26,15 @@ const opciones = [
 ];
 
 export default function VerRegistrosScreen({ navigation }) {
+
+    //modal
+    const [modalVisible, setModalVisible] = useState(false);
+    const [modalMensaje, setModalMensaje] = useState({
+        tipo: 'error',
+        titulo: '',
+        subtitulo: '',
+    });
+
     const [selectedTable, setSelectedTable] = useState('estudiantes');
     const [datos, setDatos] = useState([]);
     const [headers, setHeaders] = useState([]);
@@ -31,7 +42,7 @@ export default function VerRegistrosScreen({ navigation }) {
 
     //para actualizar Put
     const [registroSeleccionado, setRegistroSeleccionado] = useState(null);
-    const [modalVisible, setModalVisible] = useState(false);
+    const [modalVisto, setModalVisto] = useState(false);
 
     const tablasConPut = ['estudiantes', 'profesores', 'cursos', 'semestres', 'users'];
 
@@ -39,7 +50,7 @@ export default function VerRegistrosScreen({ navigation }) {
     const handleRowPress = (registro) => {
         if (!tablasConPut.includes(selectedTable)) return;
         setRegistroSeleccionado(registro);
-        setModalVisible(true);
+        setModalVisto(true);
     };
 
 
@@ -63,7 +74,7 @@ export default function VerRegistrosScreen({ navigation }) {
                         setHeaders(['id_course', 'name_course', 'acronim', 'status']);
                         break;
                     case 'semestres':
-                        data = await obtenerSemestre();
+                        data = await obtenerSemestres();
                         setHeaders(['id_semester', 'semester', 'status']);
                         break;
                     case 'curso_profesores':
@@ -71,11 +82,11 @@ export default function VerRegistrosScreen({ navigation }) {
                         setHeaders(['assignment_date', 'status', 'id_course', 'id_teacher']);
                         break;
                     case 'curso_estudiantes':
-                        data = await obtenerCursoEstudiante();
+                        data = await obtenerCursoEstudiantes();
                         setHeaders(['enrollment_date', 'status', 'id_course', 'id_student']);
                         break;
                     case 'curso_semestres':
-                        data = await obtenerCursoSemestres();
+                        data = await obtenerCursoSemestre();
                         setHeaders(['start_date', 'end_date', 'status', 'id_course', 'id_semester']);
                         break;
                     case 'users':
@@ -103,6 +114,7 @@ export default function VerRegistrosScreen({ navigation }) {
         )
     );
 
+    
     //Actulizar Put
     const handleGuardarCambios = async () => {
         try {
@@ -111,53 +123,62 @@ export default function VerRegistrosScreen({ navigation }) {
 
             switch (selectedTable) {
                 case 'estudiantes':
-                    endpoint = 'http://192.168.101.15:8000/api/students/';
+                    endpoint = '/students/';
                     idKey = 'id_student';
                     break;
                 case 'profesores':
-                    endpoint = 'http://192.168.101.15:8000/api/teachers/';
+                    endpoint = '/teachers/';
                     idKey = 'id_teacher';
                     break;
                 case 'cursos':
-                    endpoint = 'http://192.168.101.15:8000/api/courses/';
+                    endpoint = '/courses/';
                     idKey = 'id_course';
                     break;
                 case 'semestres':
-                    endpoint = 'http://192.168.101.15:8000/api/semesters/';
+                    endpoint = '/semesters/';
                     idKey = 'id_semester';
                     break;
                 case 'users':
-                    endpoint = 'http://192.168.101.15:8000/api/users/';
+                    endpoint = '/users/';
                     idKey = 'id_user';
                     break;
             }
 
-            const response = await fetch(`${endpoint}${registroSeleccionado[idKey]}/`, {
+            const dataActualizada = await fetchConToken(`${endpoint}${registroSeleccionado[idKey]}/`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(registroSeleccionado)
+                body: JSON.stringify(registroSeleccionado),
             });
 
-            if (!response.ok) {
-                throw new Error('Error al actualizar');
-            }
-
-            const dataActualizada = await response.json();
-            setModalVisible(false);
-            setRegistroSeleccionado(null);
-
-            // Recarga los datos
             setDatos((prev) =>
                 prev.map((item) =>
                     item[idKey] === dataActualizada[idKey] ? dataActualizada : item
                 )
             );
+
+            setRegistroSeleccionado(null);
+            setModalVisto(false);
+
+            
+            setModalMensaje({
+                tipo: 'success',
+                titulo: 'Actualizado correctamente ',
+                subtitulo: `El registro fue modificado.`,
+            });
+            setModalVisible(true);
+
         } catch (error) {
             console.error('Error en PUT:', error.message);
+
+            
+            setModalMensaje({
+                tipo: 'error',
+                titulo: 'Error al actualizar ',
+                subtitulo: 'No se pudo modificar el registro.',
+            });
+            setModalVisible(true);
         }
     };
+
 
 
     return (
@@ -201,7 +222,7 @@ export default function VerRegistrosScreen({ navigation }) {
             </View>
 
             {/* Modal*/}
-            {modalVisible && registroSeleccionado && (
+            {modalVisto && registroSeleccionado && (
                 <View style={styles.modalOverlay}>
                     <View style={styles.modalContainer}>
                         <Text style={styles.modalTitle}>✏️ Editar Registro</Text>
@@ -222,13 +243,21 @@ export default function VerRegistrosScreen({ navigation }) {
                             <TouchableOpacity onPress={handleGuardarCambios} style={styles.saveButton}>
                                 <Text style={styles.buttonText}>💾 Guardar</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.cancelButton}>
+                            <TouchableOpacity onPress={() => setModalVisto(false)} style={styles.cancelButton}>
                                 <Text style={styles.buttonText}>❌ Cancelar</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
                 </View>
             )}
+            <ModalMensaje
+                visible={modalVisible}
+                tipo={modalMensaje.tipo}
+                titulo={modalMensaje.titulo}
+                subtitulo={modalMensaje.subtitulo}
+                autoClose={true}
+                onClose={() => setModalVisible(false)}
+            />
         </View>
     );
 }

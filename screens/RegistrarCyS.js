@@ -4,14 +4,14 @@ import InputComponente from "../components/InputComponente";
 import TituloHeader from '../components/TituloHeader';
 import CustomButton from '../components/CustomButton';
 import { useState } from "react";
-import { createCourse } from '../api/courseServices';
-import { createSemestre } from "../api/registroSemestre";
-import { createCursoSemestre } from "../api/servicesCursoSemestre";
-import { createEstudiantes } from "../api/servicesEstudiantes";
-import { createProfesores } from "../api/servicesProfesores";
-import { createCursoEstudiante } from "../api/servicesCursoEstudiantes";
-import { createCursoProfesores } from "../api/servicesCursoProfesores";
-import { createRoles } from "../api/servicesRoles";
+import { createCourse } from "../api/apiToken";
+import { createSemestre } from "../api/apiToken";
+import { createCursoSemestre } from "../api/apiToken";
+import { createEstudiante } from "../api/apiToken";
+import { createProfesores } from "../api/apiToken";
+import { createcursoEstudiante } from "../api/apiToken";
+import { createcursoProfesor } from "../api/apiToken";
+import { createRoles } from "../api/apiToken";
 import ModalMensaje from "../components/ModalComponente";
 
 
@@ -155,7 +155,7 @@ export default function RegistrarCyS({ navigation }) {
             setModalVisible(true);
             return;
         }
-        const course = {
+        const curso = {
             id_course: parseInt(courseForm.idCourse),
             name_course: courseForm.name,
             acronim: courseForm.acronim,
@@ -163,9 +163,9 @@ export default function RegistrarCyS({ navigation }) {
         };
 
         try {
-            const newCourse = await createCourse(course);
+            const newCourse = await createCourse(curso);
             setModalMensaje({
-                tipo: 'Éxitoso',
+                tipo: 'exito',
                 titulo: '¡Registro exitoso!',
                 subtitulo: `${newCourse.name_course} registrado Correctamente`,
             });
@@ -182,7 +182,7 @@ export default function RegistrarCyS({ navigation }) {
             setModalMensaje({
                 tipo: 'error',
                 titulo: 'No se pudo Registrar',
-                subtitulo: 'No Se Pudo Registrar Correctamente',
+                subtitulo: error.message,
             });
             setModalVisible(true);
             return;
@@ -204,16 +204,16 @@ export default function RegistrarCyS({ navigation }) {
             setModalVisible(true);
             return;
         }
-        const semester = {
+        const semestre = {
             id_semester: semesterForm.idSemester ? parseInt(semesterForm.idSemester) : null,
             semester: semesterForm.semester,
             status: semesterForm.status.toUpperCase(),
         };
 
         try {
-            const newSemester = await createSemestre(semester);
+            const newSemester = await createSemestre(semestre);
             setModalMensaje({
-                tipo: 'Éxitoso',
+                tipo: 'exito',
                 titulo: '¡Registro exitoso!',
                 subtitulo: `${newSemester.semester} registrado Correctamente`,
             });
@@ -225,8 +225,12 @@ export default function RegistrarCyS({ navigation }) {
                 status: ''
             })
         } catch (error) {
-            setModalTitle(' Error al registrar ❌');
-            setModalVisible(true)
+            setModalMensaje({
+                tipo: 'error',
+                titulo: 'No Se Pudo Registrar!',
+                subtitulo: error.message,
+            });
+            setModalVisible(true);
         }
     };
 
@@ -240,7 +244,11 @@ export default function RegistrarCyS({ navigation }) {
             !cursoSemestreFrom.status.trim()
         ) {
             {
-                setModalTitle('❌ Campos Incompletos');
+                setModalMensaje({
+                    tipo: 'error',
+                    titulo: 'Campos vacíos',
+                    subtitulo: 'Completa Todos Los Campos',
+                });
                 setModalVisible(true);
                 return;
             }
@@ -254,8 +262,12 @@ export default function RegistrarCyS({ navigation }) {
         };
         try {
             const newCursoSemestre = await createCursoSemestre(cursoSemestre);
-            setModalTitle('Registro Éxitoso ✅');
-            setModalVisible(true)
+            setModalMensaje({
+                tipo: 'exito',
+                titulo: '¡Registro exitoso!',
+                subtitulo: `Registrado Correctamente`,
+            });
+            setModalVisible(true);
 
             setCuroSemestreFrom({
                 fechaInicio: '',
@@ -265,8 +277,12 @@ export default function RegistrarCyS({ navigation }) {
                 idSemestre: ''
             })
         } catch (error) {
-            setModalTitle(' Error al registrar ❌');
-            setModalVisible(true)
+            setModalMensaje({
+                tipo: 'error',
+                titulo: 'Error Al Registrar!',
+                subtitulo: error.message,
+            });
+            setModalVisible(true);
         }
     };
     //crear Estudiante
@@ -278,7 +294,11 @@ export default function RegistrarCyS({ navigation }) {
             !estudianteFrom.correo.trim() ||
             !estudianteFrom.estado.trim()
         ) {
-            setModalTitle('❌ Campos Incompletos');
+            setModalMensaje({
+                tipo: 'error',
+                titulo: 'Campos vacíos',
+                subtitulo: 'Completa Todos Los Campos',
+            });
             setModalVisible(true);
             return;
         }
@@ -287,12 +307,16 @@ export default function RegistrarCyS({ navigation }) {
             name: estudianteFrom.nombre,
             last_name: estudianteFrom.apellido,
             email: estudianteFrom.correo,
-            status: estudianteFrom.estado
+            status: estudianteFrom.estado.toUpperCase()
         };
 
         try {
-            const newEstudiante = await createEstudiantes(estudiante);
-            setModalTitle('✅ Registro exitoso');
+            const newEstudiante = await createEstudiante(estudiante);
+            setModalMensaje({
+                tipo: 'exito',
+                titulo: '¡Registro exitoso!',
+                subtitulo: `${newEstudiante.name} Registrado Correctamente`,
+            });
             setModalVisible(true);
 
             setEstudianteFrom({
@@ -303,7 +327,11 @@ export default function RegistrarCyS({ navigation }) {
                 estado: ''
             })
         } catch (error) {
-            setModalTitle('❌ Error al registrar');
+            setModalMensaje({
+                tipo: 'error',
+                titulo: 'Erro Al Registrar',
+                subtitulo: error.message,
+            });
             setModalVisible(true);
 
         }
@@ -317,7 +345,11 @@ export default function RegistrarCyS({ navigation }) {
             !profesorFrom.especialidad.trim() ||
             !profesorFrom.estado.trim()
         ) {
-            setModalTitle('❌ Campos Incompletos');
+            setModalMensaje({
+                tipo: 'error',
+                titulo: 'Campos vacíos',
+                subtitulo: 'Completa Todos Los Campos',
+            });
             setModalVisible(true);
             return;
         }
@@ -326,12 +358,16 @@ export default function RegistrarCyS({ navigation }) {
             name: profesorFrom.nombre,
             last_name: profesorFrom.apellido,
             speciality_field: profesorFrom.especialidad,
-            status: profesorFrom.estado
+            status: profesorFrom.estado.toUpperCase()
         };
         try {
             const newProfesor = await createProfesores(profesor);
-            setModalTitle('Registro Éxitoso ✅');
-            setModalVisible(true)
+            setModalMensaje({
+                tipo: 'exito',
+                titulo: '¡Registro Éxitoso!',
+                subtitulo: `${newProfesor.name} se registró Correctamente`,
+            });
+            setModalVisible(true);
 
             setProfesorFrom({
                 idProfesor: '',
@@ -341,8 +377,12 @@ export default function RegistrarCyS({ navigation }) {
                 estado: ''
             })
         } catch (error) {
-            setModalTitle(' Error al registrar ❌');
-            setModalVisible(true)
+            setModalMensaje({
+                tipo: 'error',
+                titulo: 'Error Al Registrar',
+                subtitulo: error.message,
+            });
+            setModalVisible(true);
         }
     };
 
@@ -354,21 +394,30 @@ export default function RegistrarCyS({ navigation }) {
             !cursoEstudianteFrom.idCurso.trim() ||
             !cursoEstudianteFrom.idEstudiante
         ) {
-            setModalTitle('❌ Campos Incompletos');
+            setModalMensaje({
+                tipo: 'error',
+                titulo: 'Campos vacíos',
+                subtitulo: 'Completa Todos Los Campos',
+            });
             setModalVisible(true);
             return;
         }
+
         const cursoEstudiante = {
-            enrollment_date: cursoEstudianteFrom.fechaInscripcion,
-            status: cursoEstudianteFrom.estado,
+            enrollment_date: new Date(cursoEstudianteFrom.fechaInscripcion).toISOString(),
+            status: cursoEstudianteFrom.estado.toUpperCase(),
             id_course: cursoEstudianteFrom.idCurso ? parseInt(cursoEstudianteFrom.idCurso) : null,
             id_student: cursoEstudianteFrom.idEstudiante ? parseInt(cursoEstudianteFrom.idEstudiante) : null
         };
 
         try {
-            const newEstudiante = await createCursoEstudiante(cursoEstudiante);
-            setModalTitle('Registro Éxitoso ✅');
-            setModalVisible(true)
+            const newEstudiante = await createcursoEstudiante(cursoEstudiante);
+            setModalMensaje({
+                tipo: 'exito',
+                titulo: '¡Registro Éxitoso!',
+                subtitulo: 'Curso-Estudiante Registrado',
+            });
+            setModalVisible(true);
 
             setCursoEstudiante({
                 fechaInscripcion: '',
@@ -377,8 +426,12 @@ export default function RegistrarCyS({ navigation }) {
                 idEstudiante: ''
             })
         } catch (error) {
-            setModalTitle(' Error al registrar ❌');
-            setModalVisible(true)
+            setModalMensaje({
+                tipo: 'error',
+                titulo: 'Error al Registrar',
+                subtitulo: error.message,
+            });
+            setModalVisible(true);
         }
     };
 
@@ -389,20 +442,28 @@ export default function RegistrarCyS({ navigation }) {
             !cursoProfesoresFrom.idCurso.trim() ||
             !cursoProfesoresFrom.idProfesor.trim()
         ) {
-            setModalTitle('❌ Campos Incompletos');
+            setModalMensaje({
+                tipo: 'error',
+                titulo: 'Campos vacíos',
+                subtitulo: 'Completa Todos Los Campos',
+            });
             setModalVisible(true);
             return;
         }
         const cursoProfesor = {
             assignment_date: cursoProfesoresFrom.fechaAsignacion,
-            status: cursoProfesoresFrom.estado,
+            status: cursoProfesoresFrom.estado.toUpperCase(),
             id_course: cursoProfesoresFrom.idCurso ? parseInt(cursoProfesoresFrom.idCurso) : null,
             id_teacher: cursoProfesoresFrom.idProfesor ? parseInt(cursoProfesoresFrom.idProfesor) : null
         };
         try {
-            const newCursoProfesor = await createCursoProfesores(cursoProfesor);
-            setModalTitle('Registro Éxitoso ✅');
-            setModalVisible(true)
+            const newCursoProfesor = await createcursoProfesor(cursoProfesor);
+            setModalMensaje({
+                tipo: 'exito',
+                titulo: '¡Registro Éxitoso!',
+                subtitulo: 'Curso-Profesor Registrado Con Éxito',
+            });
+            setModalVisible(true);
             setCursoProfesoresFrom({
                 fechaAsignacion: '',
                 estado: '',
@@ -410,8 +471,12 @@ export default function RegistrarCyS({ navigation }) {
                 idProfesor: ''
             })
         } catch (error) {
-            setModalTitle(' Error al registrar ❌');
-            setModalVisible(true)
+            setModalMensaje({
+                tipo: 'error',
+                titulo: 'Erro AL Registrar',
+                subtitulo: error.message,
+            });
+            setModalVisible(true);
         }
     };
 
@@ -422,7 +487,11 @@ export default function RegistrarCyS({ navigation }) {
             !rolesFrom.nombre.trim() ||
             !rolesFrom.estado.trim()
         ) {
-            setModalTitle('❌ Campos Incompletos');
+            setModalMensaje({
+                tipo: 'error',
+                titulo: 'Campos vacíos',
+                subtitulo: 'Completa Todos Los Campos',
+            });
             setModalVisible(true);
             return;
         }
@@ -430,20 +499,29 @@ export default function RegistrarCyS({ navigation }) {
         const rol = {
             id_role: rolesFrom.idRol ? parseInt(rolesFrom.idRol) : null,
             name_role: rolesFrom.nombre,
-            status: rolesFrom.estado
+            status: rolesFrom.estado.toUpperCase()
         };
 
         try {
             const newRol = await createRoles(rol);
-            setModalTitle('Registro Éxitoso ✅');
-            setModalVisible(true)
+            setModalMensaje({
+                tipo: 'exito',
+                titulo: '¡Registro Éxitoso!',
+                subtitulo: `${newRol.name_role} Registrado Correctamente`,
+            });
+            setModalVisible(true);
             setRolesFrom({
                 idRol: '',
                 nombre: '',
                 estado: ''
             })
         } catch (error) {
-
+            setModalMensaje({
+                tipo: 'error',
+                titulo: 'Error Al Registrar!',
+                subtitulo: error.message,
+            });
+            setModalVisible(true);
         }
     }
     return (

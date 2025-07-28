@@ -11,8 +11,10 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import * as Haptics from 'expo-haptics';
 
 export default function ModalMensaje({ visible, tipo, titulo, subtitulo, onClose, autoClose = false }) {
-    const icono = tipo === 'exito' ? 'check-circle' : 'error';
-    const color = tipo === 'exito' ? '#4CAF50' : '#F44336';
+    const tipoNormalizado = (tipo || '').toLowerCase();
+    const icono = tipoNormalizado === 'exito' || tipoNormalizado === 'success' ? 'check-circle' : 'error';
+    const color = tipoNormalizado === 'exito' || tipoNormalizado === 'success' ? '#4CAF50' : '#F44336';
+
     const scaleAnim = useRef(new Animated.Value(0)).current;
 
 

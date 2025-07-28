@@ -14,6 +14,7 @@ import VerRegistrosScreen from '../screens/VerRegistrosScreen';
 
 
 
+
 const Drawer = createDrawerNavigator();
 
 // Encabezado personalizado para el menú
