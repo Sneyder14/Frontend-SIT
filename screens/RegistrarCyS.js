@@ -564,6 +564,7 @@ export default function RegistrarCyS({ navigation }) {
                     backgroundColor='#1CD444'
                     styles={{ paddingVertical: 2, fontSize: 10 }}
                     onPress={handleCreateCourse}
+                    icon='add-circle-outline'
                 />
 
             </View>
@@ -591,6 +592,7 @@ export default function RegistrarCyS({ navigation }) {
                     backgroundColor='#1CD444'
                     styles={{ paddingVertical: 2, fontSize: 10 }}
                     onPress={handleCreateSemester}
+                    icon='add-circle-outline'
                 />
             </View>
             {/*---------- Sección CURSOSEMESTRE -------*/}
@@ -621,6 +623,7 @@ export default function RegistrarCyS({ navigation }) {
                     title='Registrar'
                     backgroundColor='#1CD444'
                     onPress={handlecreateCursoSemestre}
+                    icon='add-circle-outline'
                 />
             </View>
             {/*---------- Sección  ESTUDIANTES -------*/}
@@ -660,6 +663,7 @@ export default function RegistrarCyS({ navigation }) {
                     title='Registrar'
                     backgroundColor='#1CD444'
                     onPress={handleCreateEstudiante}
+                    icon='add-circle-outline'
                 />
             </View>
             {/*---------- Sección Profesores -------*/}
@@ -697,7 +701,8 @@ export default function RegistrarCyS({ navigation }) {
                 <CustomButton
                     title='Registrar'
                     backgroundColor='#1CD444'
-                    onPress={handleCreateProfesor} />
+                    onPress={handleCreateProfesor}
+                    icon='add-circle-outline' />
             </View>
             {/*---------- Sección Curso Estudiantes -------*/}
             <TituloHeader title='Curso Estudiantes' fontSize={25} />
@@ -723,6 +728,7 @@ export default function RegistrarCyS({ navigation }) {
                     title='Registrar'
                     backgroundColor='#1CD444'
                     onPress={handleCreateCursoEstudiante}
+                    icon='add-circle-outline'
                 />
             </View>
 
@@ -751,6 +757,7 @@ export default function RegistrarCyS({ navigation }) {
                     title='Registrar'
                     backgroundColor='#1CD444'
                     onPress={handleCreateCursoProfesores}
+                    icon='add-circle-outline'
                 />
             </View>
 
@@ -776,6 +783,7 @@ export default function RegistrarCyS({ navigation }) {
                     backgroundColor='#1CD444'
                     styles={{ paddingVertical: 2, fontSize: 10 }}
                     onPress={handleCreateRol}
+                    icon='add-circle-outline'
                 />
             </View>
         </ScrollView>

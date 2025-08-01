@@ -1,10 +1,12 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-
+import { Ionicons } from '@expo/vector-icons';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
-import DashboardNavigator from './DashboardNavigator'; 
+import DashboardNavigator from './DashboardNavigator';
 import VerRegistrosScreen from '../screens/VerRegistrosScreen';
+import RegistrarCyS from '../screens/RegistrarCyS';
+
 
 const Stack = createStackNavigator();
 
@@ -28,12 +30,17 @@ export default function AppNavigator() {
       {/* Dashboard con menú hamburguesa */}
       <Stack.Screen
         name="Dashboard"
-        component={DashboardNavigator} // Usa el Drawer Navigator
-        options={{ headerShown: false }}
+        component={DashboardNavigator}
+        options={{
+          headerShown: false
+        }}
+
       />
       <Stack.Screen name='VerRegistro'
-      component={VerRegistrosScreen}
-      options={{headerShown : false}}/>
+        component={VerRegistrosScreen}
+        options={{ headerShown: false }} />
+
+      <Stack.Screen name='registros' component={RegistrarCyS} options={{ title: 'egistros' }} />
     </Stack.Navigator>
   );
 }

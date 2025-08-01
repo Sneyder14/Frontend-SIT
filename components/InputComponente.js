@@ -11,8 +11,8 @@ export default function InputComponente({ placeholder, value, onChangeText, type
         if (selectedDate) {
             setTempDate(selectedDate);
             if (mode === 'date') {
-                setMode('time'); // después de seleccionar la fecha, va la hora
-                if (Platform.OS === 'ios') return; // en iOS se puede mostrar ambos
+                setMode('time');
+                if (Platform.OS === 'ios') return;
                 setShowPicker(true);
             } else {
                 setShowPicker(false);
@@ -96,11 +96,13 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#333',
         paddingVertical: 8,
+        fontFamily: 'Poppins_300Light',
     },
     dateText: {
         fontSize: 16,
         color: '#333',
         paddingVertical: 8,
+        fontFamily: 'Poppins_300Light',
     },
     webInput: {
         flex: 1,
@@ -110,6 +112,7 @@ const styles = StyleSheet.create({
         border: 'none',
         backgroundColor: 'transparent',
         color: '#333',
-        outline: 'none', 
+        outline: 'none',
+        fontFamily: 'Poppins_300Light',
     },
 });

@@ -1,36 +1,52 @@
+import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
-
-export default function CustomButton({ title, onPress, backgroundColor, textColor }) {
+export default function CustomButton({ title, onPress, backgroundColor, textColor, icon }) {
   return (
     <TouchableOpacity
-      style={StyleSheet.flatten([
+      style={[
         styles.button,
-        backgroundColor && { backgroundColor },
-        styles, 
-      ])}
+        backgroundColor && { backgroundColor }
+      ]}
       onPress={onPress}
     >
-      <Text style={[styles.text, textColor && { color: textColor }]}>
-        {title}
-      </Text>
+      <View style={styles.content}>
+        {icon && (
+          <Icon
+            name={icon}
+            size={20}
+            color={textColor || '#FFFFFF'}
+            style={styles.icon}
+          />
+        )}
+        <Text style={[styles.text, textColor && { color: textColor }]}>
+          {title}
+        </Text>
+      </View>
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#3376ff', 
+    backgroundColor: '#3376ff',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 15
+    marginTop: 15,
+  },
+  content: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  icon: {
+    marginRight: 8,
   },
   text: {
-    color: '#FFFFFF', 
+    color: '#FFFFFF',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontFamily: 'Poppins_800ExtraBold'
   },
 });

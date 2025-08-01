@@ -12,6 +12,10 @@ import CustomButton from '../components/CustomButton';
 import ModalMensaje from '../components/ModalComponente';
 import { loginUsuario } from '../api/servicesUsuarios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ContainerIcono from '../components/ContainerIcon';
+import TituloHeader from '../components/TituloHeader';
+
+
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
@@ -66,52 +70,56 @@ export default function LoginScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Icon name="account-circle" size={170} color='#3376ff' />
+
+
       <View style={styles.logoContainer}>
-        <Text style={styles.logoText}>EIS-SINTEM</Text>
+        <TituloHeader title='EI-SISTEM' fontSize={30} />
       </View>
 
-      <Text style={styles.title}>LOGIN</Text>
-
-      <View style={styles.inputContainer}>
-        <Icon name="email" size={20} color="#3376ff" style={styles.icon} />
-        <TextInput
-          style={styles.input}
-          placeholder="Correo electrónico"
-          keyboardType="email-address"
-          autoCapitalize="none"
-          value={email}
-          onChangeText={setEmail}
-        />
-      </View>
-
-      <View style={styles.inputContainer}>
-        <Icon name="lock" size={20} color="#3376ff" style={styles.icon} />
-        <TextInput
-          style={styles.input}
-          placeholder="Contraseña"
-          secureTextEntry={!showPassword}
-          value={password}
-          onChangeText={setPassword}
-        />
-        <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-          <Icon
-            name={showPassword ? 'visibility-off' : 'visibility'}
-            size={20}
-            color="#3376ff"
+      <View>
+        <View style={styles.inputContainer}>
+          <Icon name="email" size={20} color="#3376ff" style={styles.icon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Correo electrónico"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            value={email}
+            onChangeText={setEmail}
           />
-        </TouchableOpacity>
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Icon name="lock" size={20} color="#3376ff" style={styles.icon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Contraseña"
+            secureTextEntry={!showPassword}
+            value={password}
+            onChangeText={setPassword}
+          />
+          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+            <Icon
+              name={showPassword ? 'visibility-off' : 'visibility'}
+              size={20}
+              color="#3376ff"
+            />
+          </TouchableOpacity>
+        </View>
       </View>
+      <View>
+        <CustomButton title="Iniciar Sesión" onPress={handleLogin} icon='login' />
 
-      <CustomButton title="Iniciar Sesión" onPress={handleLogin} />
-
-      <View style={styles.linkContainer}>
-        <Icon name="person-add" size={20} color="#1E90FF" />
-        <Text
-          style={styles.link}
-          onPress={() => navigation.navigate('Registro')}
-        >
-          ¿No tienes cuenta? Regístrate aquí
-        </Text>
+        <View style={styles.linkContainer}>
+          <Icon name="person-add" size={20} color="#1E90FF" />
+          <Text
+            style={styles.link}
+            onPress={() => navigation.navigate('Registro')}
+          >
+            ¿No tienes cuenta? Regístrate aquí
+          </Text>
+        </View>
       </View>
 
       <ModalMensaje
@@ -133,15 +141,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
     backgroundColor: '#fff',
+    gap: 15
   },
   logoContainer: {
-    marginBottom: 30,
     alignItems: 'center',
-  },
-  logoText: {
-    fontSize: 36,
-    fontWeight: 'bold',
-    color: '#3376ff',
   },
   title: {
     fontSize: 30,
@@ -160,15 +163,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginVertical: 10,
     backgroundColor: '#f9f9f9',
+    fontFamily: 'Poppins_300Light'
   },
   icon: {
     marginRight: 10,
   },
   input: {
     flex: 1,
-    height: 40,
     fontSize: 16,
     color: '#333',
+    fontFamily: 'Poppins_300Light'
   },
   linkContainer: {
     flexDirection: 'row',
@@ -180,5 +184,6 @@ const styles = StyleSheet.create({
     color: '#1E90FF',
     textDecorationLine: 'underline',
     fontSize: 14,
+    fontFamily: 'Poppins_300Light'
   },
 });

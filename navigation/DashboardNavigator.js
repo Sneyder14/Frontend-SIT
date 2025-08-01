@@ -1,90 +1,177 @@
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import DashboardScreen from '../screens/DashboardScreen'; 
-import StudentsScreen from '../screens/StudentsScreen'; 
+import { Text, View, TouchableOpacity } from 'react-native';
+import CustomDrawerContent from "../components/PerfilDrawer"
+import DashboardScreen from '../screens/DashboardScreen';
+import StudentsScreen from '../screens/StudentsScreen';
 import InterventionsScreen from '../screens/InterventionsScreen';
-import ReportsScreen from '../screens/ReportsScreen'; 
+import ReportsScreen from '../screens/ReportsScreen';
 import NotificationsScreen from '../screens/NotificationsScreen';
-import FavoritesScreen from '../screens/FavoritesScreen'; 
-import ProfileScreen from '../screens/ProfileScreen'; 
-import SettingsScreen from '../screens/SettingsScreen'; 
+import FavoritesScreen from '../screens/FavoritesScreen';
+import ProfileScreen from '../screens/ProfileScreen';
+import SettingsScreen from '../screens/SettingsScreen';
 import TutoringScheduleScreen from '../screens/TutoringScheduleScreen';
 import RegistrarCyS from '../screens/RegistrarCyS';
 import VerRegistrosScreen from '../screens/VerRegistrosScreen';
 
-
-
-
 const Drawer = createDrawerNavigator();
 
-// Encabezado personalizado para el menú
-function CustomDrawerHeader() {
+// Componente personalizado para el título del header
+function CustomHeaderTitle({ title }) {
   return (
-    <View style={styles.headerContainer}>
-      <Image
-        source={{ uri: 'https://via.placeholder.com/80' }} // Foto de perfil simulada
-        style={styles.profileImage}
-      />
-      <Text style={styles.appTitle}>Alerta Estudiantil</Text>
-      <Text style={styles.userName}>John Doe</Text>
-      <Text style={styles.userRole}>Docente</Text>
-    </View>
+    <Text
+      style={{
+        fontFamily: 'Poppins_800ExtraBold',
+        fontSize: 20,
+        color: '#fff',
+        textTransform: 'uppercase',
+      }}
+    >
+      {title}
+    </Text>
+  );
+}
+
+// Ícono personalizado a la izquierda del header
+function CustomHeaderLeft() {
+  return (
+    <TouchableOpacity onPress={() => { }} style={{ marginLeft: 15 }}>
+      <Ionicons name="school-outline" size={24} color="#fff" />
+    </TouchableOpacity>
   );
 }
 
 export default function DashboardNavigator() {
   return (
     <Drawer.Navigator
-      screenOptions={{
+      drawerContent={(props) => <CustomDrawerContent {...props} />}
+      screenOptions={({ route }) => ({
         drawerStyle: {
-          backgroundColor: '#f9f9f9', // Fondo del menú
-          width: 250, // Ancho del menú lateral
+          backgroundColor: '#f9f9f9',
+          width: 250,
+          paddingTop: 20,
         },
-        drawerActiveTintColor: '#1E90FF', // Color de texto activo
-        drawerInactiveTintColor: '#666', // Color de texto inactivo
-        headerShown: true, // Ocultar encabezado predeterminado
-      }}
+        drawerActiveTintColor: '#1E90FF',
+        drawerInactiveTintColor: '#666',
+        headerShown: true,
+        headerStyle: {
+          backgroundColor: '#1E90FF',
+        },
+        headerTitleAlign: 'center',
+        headerTitle: () => <CustomHeaderTitle title={route.name} />,
+        headerLeft: () => <CustomHeaderLeft />,
+        drawerActiveBackgroundColor: '#e4e4e4ff',
+        drawerAllowFontScaling: true,
+        drawerHideStatusBarOnOpen: true,
+        drawerPosition: 'right',
+        drawerStatusBarAnimation: 'slide',
+        drawerType: 'front',
+        drawerContentStyle: {
+          fontFamily: 'Poppins_400Regular',
+        },
+      })}
     >
-      {/* Opciones principales del menú */}
-      <Drawer.Screen name="DashboardS" component={DashboardScreen} options={{ title: 'Dashboard' }} />
-      <Drawer.Screen name="Students" component={StudentsScreen} options={{ title: 'Estudiantes' }} />
-      <Drawer.Screen name="Interventions" component={InterventionsScreen} options={{ title: 'Intervenciones' }} />
-      <Drawer.Screen name="Reports" component={ReportsScreen} options={{ title: 'Reportes' }} />
-      <Drawer.Screen name="Notifications" component={NotificationsScreen} options={{ title: 'Notificaciones' }} />
-      <Drawer.Screen name="Favorites" component={FavoritesScreen} options={{ title: 'Seguimiento' }} />
-      <Drawer.Screen name="Profile" component={ProfileScreen} options={{ title: 'Perfil' }} />
-      <Drawer.Screen name="Settings" component={SettingsScreen} options={{ title: 'Configuración' }} />
-      <Drawer.Screen name="TutoringSchedule" component={TutoringScheduleScreen} options={{ title: 'Horario de Tutorías' }} />
-      <Drawer.Screen name='RegistrarCys' component={RegistrarCyS} options={{title:'Registrar'}}/>
-      <Drawer.Screen name='VerRegistros' component={VerRegistrosScreen} options={{title: 'Ver Registros'}}/>
+      {/* Tus pantallas aquí */}
+      <Drawer.Screen
+        name="Dashboard"
+        component={DashboardScreen}
+        options={{
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="home-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Students"
+        component={StudentsScreen}
+        options={{
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="people-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Interventions"
+        component={InterventionsScreen}
+        options={{
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="medkit-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Reports"
+        component={ReportsScreen}
+        options={{
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="document-text-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Notifications"
+        component={NotificationsScreen}
+        options={{
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="notifications-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Favorites"
+        component={FavoritesScreen}
+        options={{
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="heart-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="person-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Settings"
+        component={SettingsScreen}
+        options={{
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="settings-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Tutoring"
+        component={TutoringScheduleScreen}
+        options={{
+          title: 'Tutorías',
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="calendar-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Registrar"
+        component={RegistrarCyS}
+        options={{
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="add-circle-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Registros"
+        component={VerRegistrosScreen}
+        options={{
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="eye-outline" size={size} color={color} />
+          ),
+        }}
+      />
     </Drawer.Navigator>
   );
 }
-
-const styles = StyleSheet.create({
-  headerContainer: {
-    padding: 15,
-    alignItems: 'center',
-    backgroundColor: '#1E90FF',
-  },
-  profileImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    marginBottom: 10,
-  },
-  appTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#fff',
-  },
-  userName: {
-    fontSize: 16,
-    color: '#fff',
-  },
-  userRole: {
-    fontSize: 14,
-    color: '#fff',
-    fontStyle: 'italic',
-  },
-});

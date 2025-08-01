@@ -114,7 +114,7 @@ export default function VerRegistrosScreen({ navigation }) {
         )
     );
 
-    
+
     //Actulizar Put
     const handleGuardarCambios = async () => {
         try {
@@ -158,7 +158,7 @@ export default function VerRegistrosScreen({ navigation }) {
             setRegistroSeleccionado(null);
             setModalVisto(false);
 
-            
+
             setModalMensaje({
                 tipo: 'success',
                 titulo: 'Actualizado correctamente ',
@@ -169,7 +169,7 @@ export default function VerRegistrosScreen({ navigation }) {
         } catch (error) {
             console.error('Error en PUT:', error.message);
 
-            
+
             setModalMensaje({
                 tipo: 'error',
                 titulo: 'Error al actualizar ',
@@ -293,6 +293,7 @@ const styles = StyleSheet.create({
     tabButtonText: {
         fontSize: 14,
         color: '#333',
+        fontFamily: 'Poppins_400Regular'
     },
     tabButtonTextActive: {
         color: '#fff',
@@ -341,6 +342,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         padding: 10,
         marginBottom: 10,
+        fontFamily: 'Poppins_400Regular'
     },
     modalButtonContainer: {
         flexDirection: 'row',

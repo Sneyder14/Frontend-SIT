@@ -5,6 +5,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { createUsuarios } from "../api/servicesUsuarios";
 import ModalMensaje from '../components/ModalComponente';
 import { obtenerUsuarios } from '../api/servicesUsuarios';
+import TituloHeader from "../components/TituloHeader";
+
 
 export default function RegisterScreen({ navigation, route }) {
     const { rol = 2 } = route.params || {};
@@ -132,10 +134,8 @@ export default function RegisterScreen({ navigation, route }) {
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.logoContainer}>
-                <Text style={styles.logoText}>EIS-SINTEM</Text>
+               <TituloHeader title='Registrarse' fontSize={30}/>
             </View>
-
-            <Text style={styles.title}><Icon name="person" size={30} color="#3376ff" style={styles.inputIcon} /> SING UP</Text>
 
             {[
                 { icon: 'person', placeholder: 'ID Usuario', value: idUser, onChange: setIdUser, type: 'numeric' },
@@ -175,7 +175,7 @@ export default function RegisterScreen({ navigation, route }) {
             </View>
 
 
-            <CustomButton title="Registrarse" onPress={handleRegister} />
+            <CustomButton title="Registrarse" onPress={handleRegister} icon="how-to-reg" />
 
             <View style={styles.linkContainer}>
                 <Icon name="login" size={20} color="#1E90FF" />
@@ -240,6 +240,7 @@ const styles = StyleSheet.create({
         height: 45,
         fontSize: 16,
         color: '#333',
+        fontFamily: 'Poppins_300Light'
     },
     linkContainer: {
         marginTop: 16,
